@@ -38,3 +38,6 @@ node_modules
 
 # notes
 notes.txt
+
+.vercel
+.env*.local
