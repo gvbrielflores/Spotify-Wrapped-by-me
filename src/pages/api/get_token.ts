@@ -1,5 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+/**
+ * This function handles the request and response for retrieving a Spotify access token.
+ * @example
+ * handler(req, res)
+ * @param {NextApiRequest} req - The request object.
+ * @param {NextApiResponse} res - The response object.
+ * @returns {string} The Spotify access token.
+ * @description
+ *   - This function checks if the request method is POST and returns an error if it is not.
+ *   - It then uses the Spotify client ID and secret to make a POST request to the Spotify API and retrieve an access token.
+ *   - The access token is then returned in the response's JSON data.
+ *   - If there is an error, it is logged and an error response is returned.
+ */
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -27,7 +40,7 @@ export default async function handler(
         const tokenJ = await tokenRes.json(); // get the json data from the response object
         const token = tokenJ.access_token; // get the access_token field from the json
 
-        return res.status(200).json(token); //
+        return res.status(200).json(token); // return the token in response's json
 
     } catch(error) {
         console.log("Error getting token");

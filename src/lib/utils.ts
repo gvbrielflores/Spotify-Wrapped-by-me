@@ -28,3 +28,17 @@ export async function getToken () {
 
   return;
 }
+
+export async function testRedis() {
+  const res = await fetch("/api/test_redis");
+  return;
+}
+
+export async function redirectToSpotifyAuth() {
+  window.location.href = "/api/to_spotify_auth";
+  return;
+}
+
+export async function catchAuthResponse() {
+
+}
