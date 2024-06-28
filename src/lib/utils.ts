@@ -42,3 +42,15 @@ export async function redirectToSpotifyAuth() {
 export async function catchAuthResponse() {
 
 }
+
+export async function getBaseUrl() {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://gabis-wrapped-knb2w07mg-gabriel-floreslovos-projects.vercel.app'
+  }
+  else if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:3000'
+  }
+  else {
+    return 'test'
+  }
+}

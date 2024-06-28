@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import randomBytes from 'crypto';
-import { getAuth } from "@/lib/utils";
+import { getAuth, getBaseUrl } from "@/lib/utils";
 import { Buffer } from "node:buffer";
 import { Database } from 'sqlite3';
 
@@ -48,9 +48,11 @@ export default async function handler(
             console.log("Good state");
         }
 
+        const baseUrl = await getBaseUrl();
+
         const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
         const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-        const redirect_uri = 'http://localhost:3000/api/exchange_for_token';
+        const redirect_uri = '${baseUrl}/api/exchange_for_token';
         const formData = new URLSearchParams();
         formData.append('grant_type', 'authorization_code');
         formData.append('code', code!.toString());
@@ -80,7 +82,7 @@ export default async function handler(
             $refresh: 'true'
         }, (error) => {console.log(error)}); 
         
-        
+        res.redirect(`${baseUrl}/wrapped_page`);
         return res.status(200).json({message: "successfuly added tokens to db"});
     } catch (error) {
         console.log('Error: ', error);
