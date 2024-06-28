@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createClient } from 'redis';
+import { Database } from 'sqlite3';
 
 export default async function handler(
     req: NextApiRequest,
@@ -7,14 +7,10 @@ export default async function handler(
 ) {
 
     try {
-        const redis = require('redis');
-        const redisClient = redis.createClient();
-        redisClient.on('error', (err: Error) => {
-            console.error('Redis client error', err)
-            return res.status(500).json({ error: "Redis internal server error" });
-        });
+        const db = new Database('spotify_data.sqlite');
+        db.run(`INSERT INTO tokens VALUES
+        (0, )`);
 
-        
         console.log('yay');
         return res.status(200).json('yay');
     } catch (error) {

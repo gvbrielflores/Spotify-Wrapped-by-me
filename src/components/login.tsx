@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
-import { getAuth, getToken, redirectToSpotifyAuth, testRedis } from '@/lib/utils';
+import { getAuth, getToken, redirectToSpotifyAuth, testSqlite } from '@/lib/utils';
 
 const HomeLoginPage = () => {
 
@@ -21,8 +21,11 @@ const HomeLoginPage = () => {
                 </button>
             </div>}
             {presentClicked && 
-            <div className='flex flex-col justify-center items-center'>
-                <Button onClick={redirectToSpotifyAuth}>Log In to Spotify</Button>
+            <div>
+                <div className='flex flex-row justify-around items-center'>
+                    <Button onClick={redirectToSpotifyAuth}>Log In to Spotify</Button>
+                    <Button onClick={testSqlite}>Test Sqlite</Button>
+                </div>
             </div>}
             <div className='flex flex-row justify-center'>
                 <a>by gabriel floreslovo (gabi)</a>

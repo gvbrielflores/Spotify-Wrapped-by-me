@@ -29,8 +29,8 @@ export async function getToken () {
   return;
 }
 
-export async function testRedis() {
-  const res = await fetch("/api/test_redis");
+export async function testSqlite() {
+  const res = await fetch("/api/test_sqlite");
   return;
 }
 

@@ -19,12 +19,12 @@ export default async function handler(
 ) {
     if (req.method != "POST") {
         return res.status(405).json({ error: "Method not allowed; not POST" });
-    }
+    } 
 
     try {
         const client_id = process.env.SPOTIFY_CLIENT_ID;
         const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-        const url = 'https://accounts.spotify.com/api/token';
+        const url = 'https://accounts.spotify.com/api/token'; 
         const formData = new URLSearchParams();
         formData.append('grant_type', 'client_credentials');
         formData.append('client_id', client_id!);
