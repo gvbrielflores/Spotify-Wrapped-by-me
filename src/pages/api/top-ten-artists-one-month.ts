@@ -9,19 +9,26 @@ export default async function handler(
 ) {
     const db = new Database('./spotify_data.db');
     let authToken: any;
-    let keepGoing: boolean = true;
-    await db.get(`SELECT token_val FROM tokens WHERE refresh IS false ORDER BY id DESC LIMIT 1`,
-        function (err, row) {
-            if(row !== undefined) {
-                authToken = row;
-                keepGoing = true;
-            }
-            else {
-                keepGoing = false;
-            }
+
+    const getDbToken = (): Promise<boolean> => {
+        return new Promise ((resolve, reject) => {
+                db.get(`SELECT token_val FROM tokens WHERE refresh IS 'false' ORDER BY id DESC LIMIT 1`,
+                    function (err, row: any) {
+                        if(row !== undefined) {
+                            authToken = row.token_val;
+                            resolve(true);
+                        }
+                        else {
+                            resolve(false);
+                        }
+                    }
+                );
+            })
         }
-    );
-    
+
+    const keepGoing = await getDbToken();
+    console.log(authToken);
+
     if (!keepGoing) {
         return res.status(300).json({error: "There was no auth token value"});
     }
@@ -37,11 +44,12 @@ export default async function handler(
     try {
         const artistResponse = await fetch(reqUrl,{
             headers: {
-                'Authorization': 'Basic ' + authToken
+                'Authorization': 'Bearer ' + authToken
             }
         })
 
         const artistsJson = await artistResponse.json();
+        console.log(artistsJson);
         return res.status(200).json(artistsJson.items);
     } catch (error) {
         console.log("Error: ", error);
