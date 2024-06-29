@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import randomBytes from 'crypto';
-import { getAuth, getBaseUrl } from "@/lib/utils";
+import { getBaseUrl } from "@/lib/utils";
 import { Buffer } from "node:buffer";
 import { Database } from 'sqlite3';
+import { type } from "node:os";
 
 /**
  * Handles the authorization process for Spotify API.
@@ -10,12 +10,14 @@ import { Database } from 'sqlite3';
  * handler(req, res)
  * @param {NextApiRequest} req - The request object.
  * @param {NextApiResponse} res - The response object.
- * @returns {Object} Returns a JSON object with a success message.
+ * @returns {Promise} Returns a promise with the result of the authorization process.
  * @description
- *   - Uses the provided code and state to exchange for access and refresh tokens.
- *   - Inserts the tokens into a database for future use.
- *   - Returns a success message upon completion.
- *   - Throws an error if there is an issue with the authorization process.
+ *   - Checks if the state value returned matches the original state.
+ *   - Retrieves the base URL for the application.
+ *   - Sends a POST request to Spotify API to exchange the authorization code for access and refresh tokens.
+ *   - Stores the tokens in the database.
+ *   - Redirects to the wrapped page and returns a success message.
+ *   - Handles errors and returns an error message.
  */
 export default async function handler(
     req: NextApiRequest,
@@ -28,31 +30,37 @@ export default async function handler(
 
         const { code, state } = req.query;
 
-        let keepGoing: boolean = true;
+        const getState = (): Promise<boolean> => { // In order to use await on non-Promise returning functions, you need
+            // to wrap in a Promise handler
+            return new Promise((resolve, reject) => {
+                db.get(`SELECT state_val FROM states ORDER BY id DESC LIMIT 1`, 
+                    function(err, row: any){
+                        console.log(err);
+                        if (row && row.state_val === state) {
+                            resolve(true);
+                        }
+                        else {
+                            resolve(false);
+                        }
+                });
+            })
+        }
 
-        const stateRow = await db.get(`SELECT state_val FROM states ORDER BY id DESC LIMIT 1`, 
-            function(err, row){
-                console.log(err);
-                if (row == state) {
-                    keepGoing = true;
-                }
-                else {
-                    keepGoing = false;
-                }
-        });
+        const keepGoing = await getState();
 
         if (!keepGoing) {
+            console.log('Bad state');
             return res.status(300).json({ error: "State returned did not match original state" })
         }
         else {
-            console.log("Good state");
+            console.log('Good state');
         }
 
         const baseUrl = await getBaseUrl();
 
         const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
         const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-        const redirect_uri = '${baseUrl}/api/exchange_for_token';
+        const redirect_uri = `${baseUrl}/api/exchange-for-token`;
         const formData = new URLSearchParams();
         formData.append('grant_type', 'authorization_code');
         formData.append('code', code!.toString());
@@ -71,6 +79,10 @@ export default async function handler(
         const tokens = await tokenResponse.json();
         const accessToken = tokens.access_token;
         const refreshToken = tokens.refresh_token;
+        if ( accessToken === null || refreshToken === null) {
+            console.log('At least one token returned null');
+            return res.status(400).json({ error: 'Spotify returned at least one null token' });
+        }
         // put the tokens into the database
 
         await db.run(`INSERT INTO tokens (token_val, refresh) VALUES ($token, $refresh)`,{
@@ -84,6 +96,7 @@ export default async function handler(
         
         res.redirect(`${baseUrl}/wrapped_page`);
         return res.status(200).json({message: "successfuly added tokens to db"});
+
     } catch (error) {
         console.log('Error: ', error);
         return res.status(500).json({ error: "Error: couldn't access auth" });

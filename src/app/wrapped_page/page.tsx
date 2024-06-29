@@ -1,7 +1,9 @@
+import { Button } from "@/components/ui/button"
+
 export default function Page() {
     return (
         <div>
-            <h1>tye shi</h1>
+            <Button></Button>
         </div>
     );
 }

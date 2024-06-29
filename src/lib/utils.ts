@@ -5,20 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export async function getAuth () {
-  const res = await fetch("/api/req_auth", {
-    method: "GET"
-  });
-
-  const url = await res.json();
-
-  console.log(url);
-
-  return;
-}
-
 export async function getToken () {
-  const res = await fetch("/api/get_token", {
+  const res = await fetch("/api/get-token", {
     method: "POST"
   });
 
@@ -30,17 +18,13 @@ export async function getToken () {
 }
 
 export async function testSqlite() {
-  const res = await fetch("/api/test_sqlite");
+  const res = await fetch("/api/test-sqlite");
   return;
 }
 
 export async function redirectToSpotifyAuth() {
-  window.location.href = "/api/to_spotify_auth";
+  window.location.href = "/api/to-spotify-auth";
   return;
-}
-
-export async function catchAuthResponse() {
-
 }
 
 export async function getBaseUrl() {
@@ -53,4 +37,12 @@ export async function getBaseUrl() {
   else {
     return 'test'
   }
+}
+
+export async function topTenArtistsOneMonth() {
+  const res = await fetch("/api/top-ten-artists-one-month");
+  
+  console.log(res);
+
+  return;
 }

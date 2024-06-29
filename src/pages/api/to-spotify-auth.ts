@@ -2,6 +2,19 @@ import { getBaseUrl } from "@/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Database } from 'sqlite3';
 
+/**
+ * Handles the authentication process for Spotify API.
+ * @example
+ * handler(req, res)
+ * @param {NextApiRequest} req - The NextApiRequest object.
+ * @param {NextApiResponse} res - The NextApiResponse object.
+ * @returns {void} Redirects the user to the Spotify authorization page.
+ * @description
+ *   - Establishes a connection to the database.
+ *   - Generates a random state value for security purposes.
+ *   - Inserts the state value into the database.
+ *   - Constructs the authorization URL and redirects the user to it.
+ */
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -10,11 +23,9 @@ export default async function handler(
         console.log(error);
     });
     const baseUrl = await getBaseUrl();
-    console.log(baseUrl);
     // define all the parameters
     const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
-    const redirect_uri = `${baseUrl}/api/exchange_for_token`; // needs to match redirect in the token exchange
-    console.log(redirect_uri);
+    const redirect_uri = `${baseUrl}/api/exchange-for-token`; // needs to match redirect in the token exchange
     const show_dialog = 'true';
     const cryptoObj = require('crypto');
     const state = cryptoObj.randomBytes(20).toString('hex'); // **SUGGESTION could use uuid v4 to make this one line

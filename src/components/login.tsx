@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
-import { getAuth, getToken, redirectToSpotifyAuth, testSqlite } from '@/lib/utils';
+import { getToken, redirectToSpotifyAuth, testSqlite } from '@/lib/utils';
 
 const HomeLoginPage = () => {
 
