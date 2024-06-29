@@ -23,11 +23,11 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    try {
-        const db = new Database('./spotify_data.db', (error) => {
-            console.log(error);
-        });
+    const db = new Database('./spotify_data.db', (error) => {
+        console.log(error);
+    });
 
+    try {
         const { code, state } = req.query;
 
         const getState = (): Promise<boolean> => { // In order to use await on non-Promise returning functions, you need
@@ -100,6 +100,10 @@ export default async function handler(
     } catch (error) {
         console.log('Error: ', error);
         return res.status(500).json({ error: "Error: couldn't access auth" });
+    } finally {
+        if (db) {
+            await db.close();
+        }
     }
 }
 

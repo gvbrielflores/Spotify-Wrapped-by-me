@@ -41,8 +41,5 @@ export async function getBaseUrl() {
 
 export async function topTenArtistsOneMonth() {
   const res = await fetch("/api/top-ten-artists-one-month");
-  
-  console.log(res);
-
-  return;
+  return res;
 }

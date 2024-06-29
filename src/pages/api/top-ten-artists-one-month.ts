@@ -3,6 +3,19 @@ import { Database } from 'sqlite3';
 import { getBaseUrl } from "@/lib/utils";
 import { get } from "http";
 
+/**
+ * Retrieves the top 10 short-term artists for the current user from the Spotify API.
+ * @example
+ * handler(req, res)
+ * @param {NextApiRequest} req - The request object from Next.js.
+ * @param {NextApiResponse} res - The response object from Next.js.
+ * @returns {Promise} A promise that resolves to an array of the top 10 short-term artists for the current user.
+ * @description
+ *   - Checks the database for a valid auth token.
+ *   - If no token is found, returns an error response.
+ *   - If a token is found, makes a request to the Spotify API and returns the top 10 short-term artists.
+ *   - If there is an error, returns a 500 error response.
+ */
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -27,9 +40,9 @@ export default async function handler(
         }
 
     const keepGoing = await getDbToken();
-    console.log(authToken);
 
     if (!keepGoing) {
+        console.log('Token does not exist');
         return res.status(300).json({error: "There was no auth token value"});
     }
     else {
@@ -54,5 +67,9 @@ export default async function handler(
     } catch (error) {
         console.log("Error: ", error);
         return res.status(500).json({ error: "Spotify error" });
+    } finally {
+        if (db) {
+            await db.close();
+        }
     }
 }
