@@ -36,7 +36,7 @@ export async function redirectToSpotifyAuth() {
 
 export async function getBaseUrl() {
   if (process.env.NODE_ENV === 'production') {
-    return 'https://gabis-wrapped.vercel.app'
+    return 'https://gabis-wrapped.vercel.app' //make sure not to have extra '/' at the end
   }
   else if (process.env.NODE_ENV === 'development') {
     return 'http://localhost:3000'
