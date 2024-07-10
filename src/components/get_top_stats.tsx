@@ -9,6 +9,7 @@ const GetTopStats = () => {
 
     const topTenArtists = async () => {
         const res = await topTenArtistsOneMonth();
+        console.log(res.status);
 
         if (res.ok) {
             const data = await res.json();
@@ -28,7 +29,7 @@ const GetTopStats = () => {
                 {(artists.length > 0 ) &&
                     <ul>
                         {artists.map((artist: any, index: number) => (
-                            <li>
+                            <li key={index}>
                                 {artist.name}
                             </li>
                         ))}

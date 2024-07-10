@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { webcrypto } from "crypto";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -15,6 +16,12 @@ export async function getToken () {
   console.log(token);
 
   return;
+}
+
+export async function generateRandomString(length: number) {
+  const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const values = webcrypto.getRandomValues(new Uint8Array(length));
+  return values.reduce((acc, x) => acc + pool[x % pool.length],'');
 }
 
 export async function testSqlite() {
@@ -42,4 +49,8 @@ export async function getBaseUrl() {
 export async function topTenArtistsOneMonth() {
   const res = await fetch("/api/top-ten-artists-one-month");
   return res;
+}
+
+export async function testRoute(){
+  const res = await fetch("/api/test-route");
 }

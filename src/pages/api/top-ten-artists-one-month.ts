@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { cookies } from "next/headers";
 import { Database } from 'sqlite3';
 import { getBaseUrl } from "@/lib/utils";
 import { get } from "http";
+import { getCookie } from "@/lib/cookie";
 
 /**
  * Retrieves the top 10 short-term artists for the current user from the Spotify API.
@@ -20,30 +22,11 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const db = new Database('./spotify_data.db');
-    let authToken: any;
+    const accessToken = getCookie(req, "access_token");
 
-    const getDbToken = (): Promise<boolean> => {
-        return new Promise ((resolve, reject) => {
-                db.get(`SELECT token_val FROM tokens WHERE refresh IS 'false' ORDER BY id DESC LIMIT 1`,
-                    function (err, row: any) {
-                        if(row !== undefined) {
-                            authToken = row.token_val;
-                            resolve(true);
-                        }
-                        else {
-                            resolve(false);
-                        }
-                    }
-                );
-            })
-        }
-
-    const keepGoing = await getDbToken();
-
-    if (!keepGoing) {
+    if (accessToken === undefined) {
         console.log('Token does not exist');
-        return res.status(300).json({error: "There was no auth token value"});
+        return res.status(300).json({error: "There was no access token value"});
     }
     else {
         console.log("Token exists");
@@ -57,19 +40,15 @@ export default async function handler(
     try {
         const artistResponse = await fetch(reqUrl,{
             headers: {
-                'Authorization': 'Bearer ' + authToken
+                'Authorization': 'Bearer ' + accessToken
             }
         })
 
         const artistsJson = await artistResponse.json();
-        console.log(artistsJson);
+        console.log(artistsJson.items);
         return res.status(200).json(artistsJson.items);
     } catch (error) {
         console.log("Error: ", error);
         return res.status(500).json({ error: "Spotify error" });
-    } finally {
-        if (db) {
-            await db.close();
-        }
     }
 }
