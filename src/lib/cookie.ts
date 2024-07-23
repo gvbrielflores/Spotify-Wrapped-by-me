@@ -1,7 +1,7 @@
 import { serialize, parse } from 'cookie';
 
 export function setCookie(res: any, name: string, value: string, options: any = {}) {
-    // if value is an object, stringVal is "j:{value}" else it is {value}
+    // If value is an object, stringVal is "j:{value}" else it is {value}
     const stringVal = typeof value === 'object' ? 'j:' + JSON.stringify(value) : String(value);
 
     if ('maxAge' in options) {

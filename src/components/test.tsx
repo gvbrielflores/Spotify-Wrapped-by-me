@@ -6,7 +6,7 @@ import { Button } from "./ui/button"
 const TestButton = () => {
     return(
         <div>
-            <Button onClick={testRoute}> test route </Button>
+            <Button onClick={testRoute}> Test route </Button>
         </div>
     )
 }

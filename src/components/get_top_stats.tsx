@@ -20,7 +20,7 @@ const GetTopStats = () => {
     }
 
     return (
-        <div>
+        <div className='flex flex-col justify-items'>
             <div>
                 <Button onClick={topTenArtists}> top ten artists for one month! </Button>
             </div>
