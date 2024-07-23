@@ -24,27 +24,8 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-
     try {
         const { code, state } = req.query;
-
-        // const getState = (): Promise<boolean> => { // In order to use await on non-Promise returning functions, you need
-        //     // to wrap in a Promise handler
-        //     return new Promise((resolve, reject) => {
-        //         db.get(`SELECT state_val FROM states ORDER BY id DESC LIMIT 1`, 
-        //             function(err, row: any){
-        //                 console.log(err);
-        //                 if (row && row.state_val === state) {
-        //                     resolve(true);
-        //                 }
-        //                 else {
-        //                     resolve(false);
-        //                 }
-        //         });
-        //     })
-        // }
-
-        // const keepGoing = await getState();
 
         if (!(state === process.env.SPOTIFY_STATE)) {
             console.log('Bad state');
