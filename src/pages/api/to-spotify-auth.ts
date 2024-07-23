@@ -1,6 +1,5 @@
 import { getBaseUrl, generateRandomString } from "@/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Database } from 'sqlite3';
 
 /**
  * Handles the authentication process for Spotify API.
@@ -19,13 +18,6 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const db = new Database("./spotify_data.db", (error) => {
-        console.log(error);
-    });
-
-    // PKCE auth flow does not require storage mayb
-    const codeVerifier = await generateRandomString(64); 
-
     try {
         const baseUrl = await getBaseUrl();
         // define all the parameters
@@ -34,10 +26,7 @@ export default async function handler(
         const show_dialog = 'true';
         const state = process.env.SPOTIFY_STATE;
         const scope = "user-top-read user-read-recently-played";
-        
-        await db.run(`INSERT INTO states (state_val) VALUES ($state)`,{
-            $state: state
-        }, (error) => {console.log(error)});
+      
 
         const authUrl = new URL("https://accounts.spotify.com/authorize");
         authUrl.searchParams.append('client_id', client_id!);
@@ -51,9 +40,5 @@ export default async function handler(
     } catch (error) {
         console.log("Error: ", error);
         return res.status(500).json({ error: error });
-    } finally {
-        if (db) {
-            await db.close();
-        }
     }
 }

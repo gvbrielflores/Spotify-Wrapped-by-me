@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
-import { getToken, redirectToSpotifyAuth, testSqlite } from '@/lib/utils';
+import { getToken, redirectToSpotifyAuth } from '@/lib/utils';
 
 const HomeLoginPage = () => {
 
@@ -24,7 +24,6 @@ const HomeLoginPage = () => {
             <div>
                 <div className='flex flex-row justify-around items-center'>
                     <Button onClick={redirectToSpotifyAuth}>Log In to Spotify</Button>
-                    <Button onClick={testSqlite}>Test Sqlite</Button>
                 </div>
             </div>}
             <div className='flex flex-row justify-center'>
