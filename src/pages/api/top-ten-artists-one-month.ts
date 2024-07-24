@@ -42,7 +42,7 @@ export default async function handler(
         })
 
         const artistsJson = await artistResponse.json();
-        console.log(artistsJson.items);
+        console.log(typeof artistsJson.items, artistsJson.items);
         return res.status(200).json(artistsJson.items);
     } catch (error) {
         console.log("Error: ", error);
