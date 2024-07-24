@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getBaseUrl } from "@/lib/utils";
 import { Buffer } from "node:buffer";
-import { Database } from 'sqlite3';
-import { getCookie, setCookie } from '@/lib/cookie';
-import { type } from "node:os";
+import { setCookie } from '@/lib/cookie';
 
 /**
  * Handles the authorization process for Spotify API.
@@ -63,20 +61,18 @@ export default async function handler(
             return res.status(400).json({ error: 'Spotify returned at least one null token' });
         }
 
-        // put the tokens into cookies
+        // Put the tokens into cookies
         setCookie(res, 'access_token', accessToken, {httpOnly: true, secure: process.env.NODE_ENV === 'production', 
             path: '/', maxAge: 60 * 60 * 24 * 30 });
         // setCookie(res, 'refresh_token', refreshToken, {httpOnly: true, secure: process.env.NODE_ENV === 'production',
         //     path: '/', maxAge: 60 * 60 * 24 * 30 
         // });
-        console.log(typeof accessToken);
-        
         res.redirect(`${baseUrl}/wrapped_page`);
-        return res.status(200).json({message: "successfuly added tokens to cookies"});
+        return res.status(200).json({message: "Successfuly added tokens to cookies"});
 
     } catch (error) {
-        console.log('Error: ', error);
-        return res.status(500).json({ error: "Error: couldn't access auth" });
+        console.error('Error: ', error);
+        return res.status(500).json({ error: "Error: couldn't echange for tokens" });
     }
 }
 

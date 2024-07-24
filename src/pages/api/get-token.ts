@@ -17,8 +17,8 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    if (req.method != "POST") {
-        return res.status(405).json({ error: "Method not allowed; not POST" });
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: "Method not allowed; must be POST" });
     } 
 
     try {
@@ -37,10 +37,10 @@ export default async function handler(
             },
             body: formData.toString()
         }) 
-        const tokenJ = await tokenRes.json(); // get the json data from the response object
-        const token = tokenJ.access_token; // get the access_token field from the json
+        const tokenJ = await tokenRes.json(); // Get the json data from the response object
+        const token = tokenJ.access_token; // Get the access_token field from the json
 
-        return res.status(200).json(token); // return the token in response's json
+        return res.status(200).json(token); // Return the token in response's json
 
     } catch(error) {
         console.log("Error getting token");

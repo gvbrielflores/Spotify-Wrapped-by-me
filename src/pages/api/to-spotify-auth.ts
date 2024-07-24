@@ -20,9 +20,9 @@ export default async function handler(
 ) {
     try {
         const baseUrl = await getBaseUrl();
-        // define all the parameters
+        // Define all the parameters
         const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
-        const redirect_uri = `${baseUrl}/api/exchange-for-token`; // needs to match redirect in the token exchange
+        const redirect_uri = `${baseUrl}/api/exchange-for-token`; // Needs to match redirect in the token exchange
         const show_dialog = 'true';
         const state = process.env.SPOTIFY_STATE;
         const scope = "user-top-read user-read-recently-played";

@@ -1,9 +1,9 @@
 'use client'; //being used in server component, need to specify client side for React hooks
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
-import { getToken, redirectToSpotifyAuth } from '@/lib/utils';
+import { redirectToSpotifyAuth } from '@/lib/utils';
 
 const HomeLoginPage = () => {
 
@@ -16,7 +16,7 @@ const HomeLoginPage = () => {
             </div>
             {!presentClicked && 
             <div className='flex flex-row justify-center'>
-                <button onClick={() => setPresentClicked(true)}> {/*have to add ()=> because onClick expects a function*/}
+                <button onClick={() => setPresentClicked(true)}> {/*have to add () => when passing args because onClick expects a function*/}
                     <Image src={'/pixel_gift_box_NOTPAIDSTOCKIMAGE.png'} alt={'wrapped_NOT_PAID'} width={200} height={200}></Image>
                 </button>
             </div>}

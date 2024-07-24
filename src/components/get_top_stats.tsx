@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { topTenArtistsOneMonth } from "@/lib/utils";
 import { useState } from "react";
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from "recharts"
 
 const GetTopStats = () => {
     const [artistsData, setArtists] = useState([]);
@@ -20,7 +21,7 @@ const GetTopStats = () => {
     }
 
     return (
-        <div>
+        <div className='flex flex-col '>
             <div>
                 <Button onClick={topTenArtists}> top ten artists for one month! </Button>
             </div>
@@ -34,6 +35,16 @@ const GetTopStats = () => {
                         ))}
                     </ul>
                 }
+            </div>
+            <div>
+                {(artistsData.length > 0 ) && (<BarChart width={730} height={250} data={artistsData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name"/>
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="followers.total" fill="#8884d8"/>
+                </BarChart>)}
             </div>
         </div>
     )
