@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { topTenArtistsOneMonth } from "@/lib/utils";
 import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 const GetTopStats = () => {
     const [artistsData, setArtists] = useState([]);
@@ -22,29 +22,32 @@ const GetTopStats = () => {
 
     return (
         <div className='flex flex-col '>
-            <div>
+            <div className="flex flex-row justify-center">
                 <Button onClick={topTenArtists}> top ten artists for one month! </Button>
             </div>
-            <div>
+            <div className="flex flex-row justify-center">
                 {(artistsData.length > 0 ) &&
                     <ul>
                         {artistsData.map((artist: any, index: number) => (
                             <li key={index}>
-                                {artist.name}
+                                {`${index+1}. ${artist.name}`}
                             </li>
                         ))}
                     </ul>
                 }
             </div>
-            <div>
-                {(artistsData.length > 0 ) && (<BarChart width={730} height={250} data={artistsData}>
+            <div className="flex flex-row justify-center">
+                {(artistsData.length > 0 ) && 
+                (
+                <BarChart width={700} height={250} data={artistsData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name"/>
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="followers.total" fill="#8884d8"/>
-                </BarChart>)}
+                    <Bar dataKey="followers.total" fill="#8884d8" name='Follower Counts'/>
+                </BarChart>
+                )}
             </div>
         </div>
     )

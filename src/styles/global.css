@@ -72,7 +72,7 @@
     }
     body {
       @apply bg-background text-foreground;
-      background-color: rgb(67, 66, 66);
+      background-color: rgb(25, 20, 20);
       color: rgb(30, 215, 96);
     }
   }
