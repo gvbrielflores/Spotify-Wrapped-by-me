@@ -28,22 +28,20 @@ const GetTopStatsMonth = ({setParentVisible, interval}: ChildProps) => {
     const [resetVisible, setResetVisible] = useState(false);
     const [onlyParentVisible, setOnlyParent] = useState(false);
 
-    const topTenArtists = async (interval: String) => {
+    const getTopTenArtists = async (interval: String) => {
         const res = await topTenArtists(interval);
-        if (typeof res !== 'undefined') {
-            console.log(res.status);
-            if (res.ok) {
-                const data = await res.json();
-                setArtists(data);
-            } else {
-                console.error('Failed to fetch artists');
-                return [];
-            }
+        console.log(res.status);
+        if (res.ok) {
+            const data = await res.json();
+            setArtists(data);
+        } else {
+            console.error('Failed to fetch artists');
+            return [];
         }
     }
 
     const handleGetStats = async () => {
-        await topTenArtists(interval);
+        await getTopTenArtists(interval);
         await setParentVisible();
         setResetVisible(!resetVisible);
     }
