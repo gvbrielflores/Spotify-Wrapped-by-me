@@ -1,6 +1,6 @@
 import { serialize, parse } from 'cookie';
 
-export function setCookie(res: any, name: string, value: string, options: any = {}) {
+export async function setCookie(res: any, name: string, value: string, options: any = {}) {
     // If value is an object, stringVal is "j:{value}" else it is {value}
     const stringVal = typeof value === 'object' ? 'j:' + JSON.stringify(value) : String(value);
 

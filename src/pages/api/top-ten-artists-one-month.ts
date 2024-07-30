@@ -23,7 +23,7 @@ export default async function handler(
         const accessToken = getCookie(req, "access_token");
 
         if (accessToken === undefined) {
-            console.log('Token does not exist');
+            console.error('Token does not exist');
             return res.status(400).json({error: "There was no access token value"});
         }
         else {
