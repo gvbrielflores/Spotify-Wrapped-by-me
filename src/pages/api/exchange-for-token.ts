@@ -62,11 +62,10 @@ export default async function handler(
         }
 
         // Put the tokens into cookies
-        setCookie(res, 'access_token', accessToken, {httpOnly: true, secure: process.env.NODE_ENV === 'production', 
+        await setCookie(res, 'access_token', accessToken, {httpOnly: true, secure: process.env.NODE_ENV === 'production', 
             path: '/', maxAge: 60 * 60 * 24 * 30 });
         // setCookie(res, 'refresh_token', refreshToken, {httpOnly: true, secure: process.env.NODE_ENV === 'production',
-        //     path: '/', maxAge: 60 * 60 * 24 * 30 
-        // });
+        //     path: '/', maxAge: 60 * 60 * 24 * 30 * 60 });
         res.redirect(`${baseUrl}/wrapped_page`);
         return res.status(200).json({message: "Successfuly added tokens to cookies"});
 
