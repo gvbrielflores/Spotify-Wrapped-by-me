@@ -16,7 +16,6 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { topTenArtistsOneMonth } from "@/lib/utils";
 import { Value } from "@radix-ui/react-select";
 import WrappedPage from "@/components/wrapped-page";
 

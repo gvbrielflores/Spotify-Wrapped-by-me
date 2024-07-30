@@ -39,21 +39,21 @@ const WrappedPage = () => {
                         <SelectValue placeholder='Open your heart for'/>
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="month">One Month</SelectItem>
-                        <SelectItem value="six months">Six Months</SelectItem>
-                        <SelectItem value="year">One Year</SelectItem>
+                        <SelectItem value="short_term">One Month</SelectItem> {/*Using the spotify interval keywords as values*/}
+                        <SelectItem value="medium_term">Six Months</SelectItem>
+                        <SelectItem value="long_term">One Year</SelectItem>
                     </SelectContent>
                 </Select>
             </div>)}
-            {choice === 'month' && (
+            {choice === 'short_term' && (
             <div className="flex justify-around">
-                <GetTopStatsMonth setParentVisible={handleSelect}/>
+                <GetTopStatsMonth setParentVisible={handleSelect} interval={choice}/>
             </div>)}
-            {choice === 'six months' && (
+            {choice === 'medium_term' && (
             <div className='flex justify-around'>
                 <a>6 month</a>
             </div>)}
-            {choice === 'year' && (
+            {choice === 'long_term' && (
             <div className='flex justify-around'>
                 <a>year</a>
             </div>)}

@@ -40,8 +40,13 @@ export async function getBaseUrl() {
   }
 }
 
-export async function topTenArtistsOneMonth() {
-  const res = await fetch("/api/top-ten-artists-one-month");
+export async function topTenArtists(interval: String) {
+  if (interval !== 'short_term' && interval !== 'medium_term' && interval !== 'long_term') {
+    console.error('Invalid interval for top ten');
+  }
+  const topTenReq = new URL('/api/top-ten-artists');
+  topTenReq.searchParams.append('interval', interval.toString());
+  const res = await fetch(topTenReq);
   return res;
 }
 

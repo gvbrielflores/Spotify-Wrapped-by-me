@@ -1,12 +1,13 @@
 'use client';
 
 import { Button } from "@/components/ui/button"
-import { topTenArtistsOneMonth } from "@/lib/utils";
+import { topTenArtists } from "@/lib/utils";
 import React, { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 interface ChildProps {
     setParentVisible: () => void;
+    interval: String;
 }
 
 /**
@@ -22,25 +23,27 @@ interface ChildProps {
  *   - Uses handleReset function to handle button click and reset component to initial state.
  *   - Renders a button to display top ten artists and a button to reset the component.
  */
-const GetTopStatsMonth = ({setParentVisible}: ChildProps) => {
+const GetTopStatsMonth = ({setParentVisible, interval}: ChildProps) => {
     const [artistsData, setArtists] = useState([]);
     const [resetVisible, setResetVisible] = useState(false);
     const [onlyParentVisible, setOnlyParent] = useState(false);
 
-    const topTenArtists = async () => {
-        const res = await topTenArtistsOneMonth();
-        console.log(res.status);
-        if (res.ok) {
-            const data = await res.json();
-            setArtists(data);
-        } else {
-            console.error('Failed to fetch artists');
-            return [];
+    const topTenArtists = async (interval: String) => {
+        const res = await topTenArtists(interval);
+        if (typeof res !== 'undefined') {
+            console.log(res.status);
+            if (res.ok) {
+                const data = await res.json();
+                setArtists(data);
+            } else {
+                console.error('Failed to fetch artists');
+                return [];
+            }
         }
     }
 
     const handleGetStats = async () => {
-        await topTenArtists();
+        await topTenArtists(interval);
         await setParentVisible();
         setResetVisible(!resetVisible);
     }
