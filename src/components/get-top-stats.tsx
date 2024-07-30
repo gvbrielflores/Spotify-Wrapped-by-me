@@ -23,10 +23,24 @@ interface ChildProps {
  *   - Uses handleReset function to handle button click and reset component to initial state.
  *   - Renders a button to display top ten artists and a button to reset the component.
  */
-const GetTopStatsMonth = ({setParentVisible, interval}: ChildProps) => {
+const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
     const [artistsData, setArtists] = useState([]);
     const [resetVisible, setResetVisible] = useState(false);
     const [onlyParentVisible, setOnlyParent] = useState(false);
+
+    let time: String;
+    if (interval === 'short_term') {
+        time = 'the last month';
+    }
+    else if (interval === 'medium_term') {
+        time = 'the last six months';
+    }
+    else if (interval == 'long_term') {
+        time = "the last year"
+    }
+    else {
+        time = 'Not a valid interval'
+    }
 
     const getTopTenArtists = async (interval: String) => {
         const res = await topTenArtists(interval);
@@ -55,7 +69,7 @@ const GetTopStatsMonth = ({setParentVisible, interval}: ChildProps) => {
     return (
         <div className='flex flex-col'>
             {!onlyParentVisible && !resetVisible && (<div className="flex flex-row justify-center">
-                <Button onClick={handleGetStats}> top ten artists for one month! </Button>
+                <Button onClick={handleGetStats}> Get your top ten for {time} </Button>
             </div>)}
             {(artistsData.length > 0 ) && !onlyParentVisible && <div className="flex flex-row justify-center">
                 <ul>
@@ -83,4 +97,4 @@ const GetTopStatsMonth = ({setParentVisible, interval}: ChildProps) => {
     )
 }
 
-export default GetTopStatsMonth;
+export default GetTopStats;

@@ -1,6 +1,6 @@
 'use client';
 
-import GetTopStatsMonth from "@/components/get-top-stats-month";
+import GetTopStats from "@/components/get-top-stats";
 import { useState } from "react";
 import {
     Select,
@@ -36,7 +36,7 @@ const WrappedPage = () => {
             {visibleSelect && (<div className="flex items-center justify-around p-2">
                 <Select onValueChange={setChoice}> {/*Select component sends value as argument to handler specified here*/}
                     <SelectTrigger className="w-1/5">
-                        <SelectValue placeholder='Open your heart for'/>
+                        <SelectValue placeholder='Peer into your soul for'/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="short_term">One Month</SelectItem> {/*Using the spotify interval keywords as values*/}
@@ -47,15 +47,15 @@ const WrappedPage = () => {
             </div>)}
             {choice === 'short_term' && (
             <div className="flex justify-around">
-                <GetTopStatsMonth setParentVisible={handleSelect} interval={choice}/>
+                <GetTopStats setParentVisible={handleSelect} interval={choice}/>
             </div>)}
             {choice === 'medium_term' && (
             <div className='flex justify-around'>
-                <a>6 month</a>
+                <GetTopStats setParentVisible={handleSelect} interval={choice}/>
             </div>)}
             {choice === 'long_term' && (
             <div className='flex justify-around'>
-                <a>year</a>
+                <GetTopStats setParentVisible={handleSelect} interval={choice}/>
             </div>)}
         </div>
     );

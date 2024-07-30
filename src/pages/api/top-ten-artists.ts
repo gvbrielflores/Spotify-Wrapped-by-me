@@ -20,10 +20,10 @@ export default async function handler(
     res: NextApiResponse
 ) {
     try {
-        const { desiredInterval } = req.query;
+        const { interval } = req.query;
 
-        if (desiredInterval !== 'short_term' && desiredInterval !== 'medium_term' && desiredInterval !== 'long_term') {
-            console.error('Invalid interval for top ten');
+        if (interval !== 'short_term' && interval !== 'medium_term' && interval !== 'long_term') {
+            console.error('API: Invalid interval for top ten');
             return res.status(400).json({ error: "Invalid interval for top ten"});
         }
     
@@ -38,7 +38,7 @@ export default async function handler(
         }
 
         const reqUrl = new URL("https://api.spotify.com/v1/me/top/artists");
-        reqUrl.searchParams.append('time_range', desiredInterval);
+        reqUrl.searchParams.append('time_range', interval);
         reqUrl.searchParams.append('limit', '10');
         reqUrl.searchParams.append('offset', '0');
 
