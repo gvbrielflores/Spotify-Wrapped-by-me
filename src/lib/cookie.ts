@@ -4,12 +4,11 @@ export async function setCookie(res: any, name: string, value: string, options: 
     // If value is an object, stringVal is "j:{value}" else it is {value}
     const stringVal = typeof value === 'object' ? 'j:' + JSON.stringify(value) : String(value);
 
-    if ('maxAge' in options) {
-        options.expires = new Date(Date.now() + options.maxAge);
-        options.maxAge /= 1000;
-    }
+    const cookieArray = Array.isArray(res.getHeader('Set-Cookie') || []) ? (res.getHeader('Set-Cookie') || []) : 
+    ([res.getHeader('Set-Cookie')]);
+    cookieArray.push(serialize(name, String(stringVal), options));
 
-    res.setHeader('Set-Cookie', serialize(name, String(stringVal), options));
+    res.setHeader('Set-Cookie', cookieArray);
 } 
 
 export function getCookie(req: any, name: string) {

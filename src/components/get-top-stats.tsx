@@ -48,7 +48,8 @@ const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
         if (res.ok) {
             const data = await res.json();
             setArtists(data);
-        } else {
+        }
+        else {
             console.error('Failed to fetch artists');
             return [];
         }

@@ -28,6 +28,7 @@ export async function redirectToSpotifyAuth() {
   window.location.href = "/api/to-spotify-auth";
 }
 
+
 export async function getBaseUrl() {
   if (process.env.NODE_ENV === 'production') {
     return 'https://gabis-wrapped.vercel.app'; //make sure not to have extra '/' at the end
