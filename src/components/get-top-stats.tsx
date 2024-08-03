@@ -45,11 +45,15 @@ const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
     const getTopTenArtists = async (interval: String) => {
         const res = await topTenArtists(interval);
         console.log(res.status);
+        if (res.redirected) {
+            window.location.href = res.url;
+        }
         if (res.ok) {
             const data = await res.json();
             setArtists(data);
         }
         else {
+            console.error(await res.json());
             console.error('Failed to fetch artists');
             return [];
         }

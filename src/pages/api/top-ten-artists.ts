@@ -33,7 +33,7 @@ export default async function handler(
             console.error('Access token does not exist');
             const goRefresh = new URL('/api/refresh-access-token',await getBaseUrl());
             goRefresh.searchParams.append('interval', interval);
-            res.redirect(goRefresh.toString());
+            res.redirect(302, goRefresh.toString());
         }
         else {
             console.log("Token exists");
@@ -56,7 +56,7 @@ export default async function handler(
             return res.status(200).json(artistsJson.items);
         }
         else {
-            console.error(artistsJson);
+            console.error("artistsJson returned from Spotify: ",artistsJson);
             return res.status(402).json({error: 'Spotify response was undefined'});
         }
     } catch (error) {

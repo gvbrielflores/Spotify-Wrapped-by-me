@@ -19,34 +19,43 @@ export default async function handler(
         const authBuf = Buffer.from(client_id + ":" + client_secret).toString('base64');
 
         const refreshToken = getCookie(req, 'refresh_token');
-        const refreshBody = new URLSearchParams();
-        refreshBody.append('grant_type','refresh_token');
-        if (typeof refreshToken !== 'undefined') {
+        if (refreshToken) {
+            const refreshBody = new URLSearchParams();
+            refreshBody.append('grant_type','refresh_token');
             refreshBody.append('refresh_token', refreshToken);
+
+            const refreshResponse = await fetch('https://accounts.spotify.com/api/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic ' + authBuf
+                },
+                body: refreshBody.toString()
+            });
+    
+            const responseData = await refreshResponse.json();
+            if (!refreshResponse.ok) {
+                console.error("Refresh response from spotify: ",responseData);
+                return res.status(refreshResponse.status).json({error: responseData.error.message});
+            }
+
+            const accessToken = responseData.access_token;
+    
+            await setCookie(res, 'access_token', accessToken, {httpOnly: true, secure: process.env.NODE_ENV === 'production', 
+                path: '/', maxAge: 60 * 60 });
+    
+            const callTopTenArtists = new URL('/api/top-ten-artists',baseUrl);
+            callTopTenArtists.searchParams.append('interval', interval);
+            console.log('redirect to topten');
+            res.redirect(callTopTenArtists.toString());
         }
         else { // If refresh token doesn't exist, redirect user to login page to re-authorize
-            res.redirect(`${baseUrl}/`);
+            res.redirect(302,`${baseUrl}/`);
+            /* Note: this api is called as part of a chain starting with top ten artists. Thus, this redirect actually 
+            returns to the function that called the original api; as it is expecting a return. It seems like
+            res.redirect returns a 200 status and two other fields: redirected = true and url=<url returned>
+            I did not know that a http response had those attributes. */
         }
-
-        const refreshResponse = await fetch('https://accounts.spotify.com/api/token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ' + authBuf
-            },
-            body: refreshBody.toString()
-        });
-
-        const responseData = await refreshResponse.json();
-        console.log(responseData);
-        const accessToken = responseData.access_token;
-
-        await setCookie(res, 'access_token', accessToken, {httpOnly: true, secure: process.env.NODE_ENV === 'production', 
-            path: '/', maxAge: 60 * 60 });
-
-        const callTopTenArtists = new URL('/api/top-ten-artists',baseUrl);
-        callTopTenArtists.searchParams.append('interval', interval);
-        res.redirect(callTopTenArtists.toString());
     } catch (error) {
         console.error("There was an error refreshing access token: ", error);
         return res.status(500).json({ error: `There was an error refreshing access token: ${error}` });
