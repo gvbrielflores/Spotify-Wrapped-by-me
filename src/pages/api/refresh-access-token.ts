@@ -2,6 +2,19 @@ import { getCookie, setCookie } from "@/lib/cookie";
 import { getBaseUrl } from "@/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
+/**
+ * Handles API requests to refresh Spotify access tokens and redirects to appropriate endpoints.
+ * @example
+ * handler(req, res)
+ * No return value, but sends HTTP responses.
+ * @param {NextApiRequest} req - The API request object containing query parameters and cookies.
+ * @param {NextApiResponse} res - The API response object used to send back the desired HTTP response.
+ * @returns {void}
+ * @description
+ *   - Validates the interval query parameter to match expected terms.
+ *   - Refreshes Spotify access tokens if refresh token is available.
+ *   - Redirects to top ten artists endpoint or login page based on token availability.
+ */
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -52,7 +65,7 @@ export default async function handler(
         else { // If refresh token doesn't exist, redirect user to login page to re-authorize
             res.redirect(302,`${baseUrl}/`);
             /* Note: this api is called as part of a chain starting with top ten artists. Thus, this redirect actually 
-            returns to the function that called the original api; as it is expecting a return. It seems like
+            returns to the function that called the original api, as it is expecting a return. It seems like
             res.redirect returns a 200 status and two other fields: redirected = true and url=<url returned>
             I did not know that a http response had those attributes. */
         }
