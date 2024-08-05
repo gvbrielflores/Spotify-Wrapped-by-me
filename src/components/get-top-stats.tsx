@@ -14,7 +14,7 @@ interface ChildProps {
  * Component that displays the top ten artists for one month and their corresponding follower count in a bar chart.
  * @component
  * @example
- *   <TopTenArtists prop1={sample_value1} prop2={sample_value2} />
+ *   <GetTopStats prop1={sample_value1} prop2={sample_value2} />
  * @prop {Function} setParentVisible - Function to set the visibility of the parent component.
  * @description
  *   - Uses useState hook to manage state variables for artistsData, resetVisible, and onlyParentVisible.
