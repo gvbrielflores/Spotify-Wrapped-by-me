@@ -2,6 +2,17 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { webcrypto } from "crypto";
 
+/**
+ * Merges class names using clsx and twMerge.
+ * @example
+ * cn('class1', 'class2')
+ * 'class1 class2'
+ * @param {...ClassValue} inputs - Class names to merge.
+ * @returns {string} Merged class names.
+ * @description
+ *   - Utilizes twMerge for Tailwind CSS specific merging.
+ *   - Handles conditional class names via clsx.
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -29,6 +40,17 @@ export async function redirectToSpotifyAuth() {
 }
 
 
+/**
+ * Returns the base URL depending on the environment.
+ * @example
+ * getBaseUrl()
+ * 'https://gabis-wrapped.vercel.app'
+ * @returns {string} Base URL string based on the current environment.
+ * @description
+ *   - Checks `process.env.NODE_ENV` to determine the environment.
+ *   - Returns a production, development, or test URL accordingly.
+ *   - Ensures the production URL does not have an extra '/' at the end.
+ */
 export async function getBaseUrl() {
   if (process.env.NODE_ENV === 'production') {
     return 'https://gabis-wrapped.vercel.app'; //make sure not to have extra '/' at the end
