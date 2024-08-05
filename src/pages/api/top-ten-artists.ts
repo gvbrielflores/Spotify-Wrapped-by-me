@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCookie } from "@/lib/cookie";
+import { getBaseUrl } from "@/lib/utils";
 
 /**
  * Handles the request and response for retrieving a user's top 10 short-term artists from Spotify.
@@ -21,7 +22,6 @@ export default async function handler(
 ) {
     try {
         const { interval } = req.query;
-
         if (interval !== 'short_term' && interval !== 'medium_term' && interval !== 'long_term') {
             console.error('API: Invalid interval for top ten');
             return res.status(400).json({ error: "Invalid interval for top ten"});
@@ -30,8 +30,10 @@ export default async function handler(
         const accessToken = getCookie(req, "access_token");
 
         if (accessToken === undefined) {
-            console.error('Token does not exist');
-            return res.status(400).json({error: "There was no access token value"});
+            console.error('Access token does not exist');
+            const goRefresh = new URL('/api/refresh-access-token',await getBaseUrl());
+            goRefresh.searchParams.append('interval', interval);
+            res.redirect(302, goRefresh.toString());
         }
         else {
             console.log("Token exists");
@@ -49,10 +51,16 @@ export default async function handler(
         })
 
         const artistsJson = await artistResponse.json();
-        console.log(typeof artistsJson.items, artistsJson.items);
-        return res.status(200).json(artistsJson.items);
+        
+        if (typeof artistsJson.error === 'undefined') {
+            return res.status(200).json(artistsJson.items);
+        }
+        else {
+            console.error("artistsJson returned from Spotify: ",artistsJson);
+            return res.status(402).json({error: 'Spotify response was undefined'});
+        }
     } catch (error) {
         console.log("Error: ", error);
-        return res.status(500).json({ error: "Spotify error" });
+        return res.status(500).json({ error: `Server error getting top ten artists: ${error}` });
     }
 }
