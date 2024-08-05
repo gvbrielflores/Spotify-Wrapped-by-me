@@ -1,9 +1,11 @@
 'use client';
 
 import { Button } from "@/components/ui/button"
-import { topTenArtists } from "@/lib/utils";
+import { getBaseUrl, topTenArtists } from "@/lib/utils";
 import React, { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.min.css'
 
 interface ChildProps {
     setParentVisible: () => void;
@@ -43,10 +45,14 @@ const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
     }
 
     const getTopTenArtists = async (interval: String) => {
+        const baseUrl = await getBaseUrl();
         const res = await topTenArtists(interval);
         console.log(res.status);
-        if (res.redirected) {
-            window.location.href = res.url;
+        if (res.redirected && res.url === `${baseUrl}/`) {
+            toast.error('Log in again to re-authenticate.');
+            setTimeout(() => {window.location.href = res.url;},
+        1000) //miliseconds
+            return;
         }
         if (res.ok) {
             const data = await res.json();
@@ -98,6 +104,7 @@ const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
             {resetVisible && (<div className='flex flex-row justify-center'>
                 <Button onClick={handleReset}> Try a different interval </Button>
             </div>)}
+            <ToastContainer/>
         </div>
     )
 }
