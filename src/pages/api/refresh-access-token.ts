@@ -20,10 +20,14 @@ export default async function handler(
     res: NextApiResponse
 ) {
     try {
-        const { interval } = req.query;
+        const { interval, dataType } = req.query;
         if (interval !== 'short_term' && interval !== 'medium_term' && interval !== 'long_term') {
-            console.error('API: Invalid interval for top ten');
+            console.error('refresh-access-token: Invalid interval for top ten');
             return res.status(400).json({ error: "Invalid interval for top ten"});
+        }
+        if (dataType !== 'artists' && dataType !== 'tracks') {
+            console.error('refresh-access-token: Invalid data type');
+            return res.status(400).json({ error: "Invalid data type"});
         }
 
         const baseUrl = await getBaseUrl();
@@ -59,6 +63,7 @@ export default async function handler(
     
             const callTopTenArtists = new URL('/api/top-ten-artists',baseUrl);
             callTopTenArtists.searchParams.append('interval', interval);
+            callTopTenArtists.searchParams.append('dataType', dataType);
             console.log('redirect to topten');
             res.redirect(callTopTenArtists.toString());
         }

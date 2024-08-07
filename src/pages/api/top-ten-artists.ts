@@ -23,8 +23,12 @@ export default async function handler(
     try {
         const { interval, dataType } = req.query;
         if (interval !== 'short_term' && interval !== 'medium_term' && interval !== 'long_term') {
-            console.error('API: Invalid interval for top ten');
+            console.error(`top-ten-${dataType}: Invalid interval for top ten`);
             return res.status(400).json({ error: "Invalid interval for top ten"});
+        }
+        if (dataType !== 'artists' && dataType !== 'tracks') {
+            console.error(`top-ten-${dataType}: Invalid data type`);
+            return res.status(400).json({ error: "Invalid data type"});
         }
     
         const accessToken = getCookie(req, "access_token");
@@ -33,6 +37,7 @@ export default async function handler(
             console.error('Access token does not exist');
             const goRefresh = new URL('/api/refresh-access-token',await getBaseUrl());
             goRefresh.searchParams.append('interval', interval);
+            goRefresh.searchParams.append('dataType', dataType);
             res.redirect(302, goRefresh.toString());
         }
         else {
