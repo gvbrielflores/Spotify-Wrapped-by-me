@@ -63,12 +63,13 @@ export async function getBaseUrl() {
   }
 }
 
-export async function topTenArtists(interval: String) {
+export async function topTenData(interval: String, dataType: String) {
   if (interval !== 'short_term' && interval !== 'medium_term' && interval !== 'long_term') {
     console.error('Invalid interval for top ten');
   }
   const topTenReq = new URL('/api/top-ten-artists', await getBaseUrl());
   topTenReq.searchParams.append('interval', interval.toString());
+  topTenReq.searchParams.append('dataType', dataType.toString());
   const res = await fetch(topTenReq);
   return res;
 }

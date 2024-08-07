@@ -21,7 +21,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     try {
-        const { interval } = req.query;
+        const { interval, dataType } = req.query;
         if (interval !== 'short_term' && interval !== 'medium_term' && interval !== 'long_term') {
             console.error('API: Invalid interval for top ten');
             return res.status(400).json({ error: "Invalid interval for top ten"});
@@ -39,7 +39,7 @@ export default async function handler(
             console.log("Token exists");
         }
 
-        const reqUrl = new URL("https://api.spotify.com/v1/me/top/artists");
+        const reqUrl = new URL(`https://api.spotify.com/v1/me/top/${dataType}`);
         reqUrl.searchParams.append('time_range', interval);
         reqUrl.searchParams.append('limit', '10');
         reqUrl.searchParams.append('offset', '0');
@@ -56,7 +56,7 @@ export default async function handler(
             return res.status(200).json(artistsJson.items);
         }
         else {
-            console.error("artistsJson returned from Spotify: ",artistsJson);
+            console.error(`${dataType} Json returned from Spotify: `,artistsJson);
             return res.status(402).json({error: 'Spotify response was undefined'});
         }
     } catch (error) {

@@ -25,7 +25,7 @@ export default async function handler(
         const redirect_uri = `${baseUrl}/api/exchange-for-token`; // Needs to match redirect in the token exchange
         const show_dialog = 'true';
         const state = process.env.SPOTIFY_STATE;
-        const scope = "user-top-read user-read-recently-played";
+        const scope = "user-top-read user-read-recently-played user-read-private user-read-email";
       
 
         const authUrl = new URL("https://accounts.spotify.com/authorize");

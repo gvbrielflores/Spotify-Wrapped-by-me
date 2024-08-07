@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button"
-import { getBaseUrl, topTenArtists } from "@/lib/utils";
+import { getBaseUrl, topTenData } from "@/lib/utils";
 import React, { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { toast, ToastContainer } from 'react-toastify'
@@ -27,6 +27,7 @@ interface ChildProps {
  */
 const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
     const [artistsData, setArtists] = useState([]);
+    const [trackData, setTracks] = useState([]);
     const [resetVisible, setResetVisible] = useState(false);
     const [onlyParentVisible, setOnlyParent] = useState(false);
 
@@ -46,7 +47,7 @@ const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
 
     const getTopTenArtists = async (interval: String) => {
         const baseUrl = await getBaseUrl();
-        const res = await topTenArtists(interval);
+        const res = await topTenData(interval, 'artists');
         console.log(res.status);
         if (res.redirected && res.url === `${baseUrl}/`) {
             toast.error('Log in again to re-authenticate.');
@@ -65,8 +66,30 @@ const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
         }
     }
 
+    const getTopTenTracks = async (interval: String) => {
+        const baseUrl = await getBaseUrl();
+        const res = await topTenData(interval, 'tracks');
+        console.log(res.status);
+        if (res.redirected && res.url === `${baseUrl}/`) {
+            toast.error('Log in again to re-authenticate.');
+            setTimeout(() => {window.location.href = res.url;},
+        1000) //miliseconds
+            return;
+        }
+        if (res.ok) {
+            const data = await res.json();
+            setTracks(data);
+        }
+        else {
+            console.error(await res.json());
+            console.error('Failed to fetch tracks');
+            return [];
+        }
+    }
+
     const handleGetStats = async () => {
         await getTopTenArtists(interval);
+        await getTopTenTracks(interval);
         await setParentVisible();
         setResetVisible(!resetVisible);
     }
@@ -82,11 +105,19 @@ const GetTopStats = ({setParentVisible, interval}: ChildProps) => {
             {!onlyParentVisible && !resetVisible && (<div className="flex flex-row justify-center">
                 <Button onClick={handleGetStats}> Get your top ten for {time} </Button>
             </div>)}
-            {(artistsData.length > 0 ) && !onlyParentVisible && <div className="flex flex-row justify-center">
+            {artistsData.length > 0  && trackData.length > 0 && !onlyParentVisible && 
+            <div className="flex flex-row justify-between">
                 <ul>
-                    {artistsData.map((artist: any, index: number) => (
+                {artistsData.map((artist: any, index: number) => (
+                    <li key={index}>
+                        {`${index+1}. ${artist.name}`}
+                    </li>
+                ))}
+                </ul>
+                <ul>
+                {trackData.map((track: any, index: number) => (
                         <li key={index}>
-                            {`${index+1}. ${artist.name}`}
+                            {`${index+1}. ${track.name}`}
                         </li>
                     ))}
                 </ul>
